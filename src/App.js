@@ -1,11 +1,19 @@
 import React from 'react';
-import {Map} from './components/Map';
+import Map from './components/Map';
+import { BrowserRouter as Router,Routes, Route } from 'react-router-dom';
+import { Landing } from './components/Landing';
 
-function App() {
+
+const App = () => {
   return (
-    <div>
-      <Map />
-    </div>
+    <Router>
+           <div className="App">
+           <Routes>
+                 <Route exact path='/' element={< Landing/>}></Route>
+                 <Route exact path='/about' element={< Map />}></Route>
+          </Routes>
+          </div>
+       </Router>
   );
 }
 

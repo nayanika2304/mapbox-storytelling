@@ -10,7 +10,7 @@ const scroller = window.scrollama();
 let initLoad = true;
 window.addEventListener('resize', scroller.resize);
 
-export const Map = () => {
+const Map = () => {
     const mapContainer = useRef(null);
     const map = useRef(null);
     const insetMapContainer = useRef(null);
@@ -297,3 +297,5 @@ export const Map = () => {
     );
 };
 
+
+export default Map
