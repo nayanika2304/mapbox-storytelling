@@ -1,8 +1,8 @@
 import React, { useRef, useEffect, useState } from 'react';
 import mapboxgl from 'mapbox-gl';
-import '../Map.css';
+import './Map.css';
 import {transformRequest} from '../constants/transformRequest'
-import {config} from '../config'
+import {config} from './config'
 import {alignments,layerTypes} from '../constants/attributes'
 mapboxgl.accessToken = config.accessToken;
 
@@ -10,7 +10,7 @@ const scroller = window.scrollama();
 let initLoad = true;
 window.addEventListener('resize', scroller.resize);
 
-const Map = () => {
+const StoryMap = () => {
     const mapContainer = useRef(null);
     const map = useRef(null);
     const insetMapContainer = useRef(null);
@@ -298,4 +298,4 @@ const Map = () => {
 };
 
 
-export default Map
+export default StoryMap

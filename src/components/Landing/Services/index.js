@@ -16,7 +16,7 @@ export const Services = (props) => {
                     {' '}
                     <i className={d.icon}></i>
                     <div className='service-desc'>
-                      <a href='/story'><h3>{d.name}</h3></a>
+                      <a href={d.link}><h3>{d.name}</h3></a>
                       <p>{d.text}</p>
                     </div>
                   </div>
