@@ -1,7 +1,7 @@
 import React, { useRef, useEffect } from 'react';
-import mapboxgl from 'mapbox-gl';
-import { config } from '../GlacierMap/config';
 import './Map.css';
+import mapboxgl from 'mapbox-gl';
+import { config } from './config';
 import {transformRequest} from '../constants/transformRequest'
 import {alignments,layerTypes} from '../constants/attributes'
 
@@ -11,17 +11,16 @@ const scroller = window.scrollama();
 
 window.addEventListener('resize', scroller.resize);
 
-
-const GlacierMap = () => {
+const BikePhilly = () => {
     const mapContainer = useRef(null);
     const map = useRef(null);
-    
+
     const getLayerPaintType = (layer) => {
         var layerType = map.current.getLayer(layer).type;
         return layerTypes[layerType];
     }
 
-    const setLayerOpacity = (layer) => {
+    const setLayerOpacity = (layer) =>  {
         var paintProps = getLayerPaintType(layer.layer);
         paintProps.forEach(function(prop) {
             var options = {};
@@ -50,24 +49,20 @@ const GlacierMap = () => {
 
     },[]) // eslint-disable-line react-hooks/exhaustive-deps
 
-    useEffect(() => {
-
+    useEffect(() =>{
         if (config.showMarkers) {
             var marker = new mapboxgl.Marker({ color: config.markerColor });
             marker.setLngLat(config.chapters[0].location.center).addTo(map.current);
         }
 
-        map.current.on("load",function(){
+        map.current.on("load", function() {
             if (config.use3dTerrain) {
-                if (!map.current.getSource('mapbox-dem')){
-                    map.current.addSource('mapbox-dem', {
-                        'type': 'raster-dem',
-                        'url': 'mapbox://mapbox.mapbox-terrain-dem-v1',
-                        'tileSize': 512,
-                        'maxzoom': 14
-                    });
-                }
-                
+                map.current.addSource('mapbox-dem', {
+                    'type': 'raster-dem',
+                    'url': 'mapbox://mapbox.mapbox-terrain-dem-v1',
+                    'tileSize': 512,
+                    'maxzoom': 14
+                });
                 // add the DEM source as a terrain layer with exaggerated height
                 map.current.setTerrain({ 'source': 'mapbox-dem', 'exaggeration': 1.5 });
         
@@ -82,46 +77,48 @@ const GlacierMap = () => {
                     }
                 });
             };
-        })
-        // setup the instance, pass callback functions
-        scroller
-        .setup({
-            step: '.step',
-            offset: 0.5,
-            progress: true
-        }).onStepEnter(response => {
-            var chapter = config.chapters.find(chap => chap.id === response.element.id);
-            response.element.classList.add('active');
-            map.current[chapter.mapAnimation || 'flyTo'](chapter.location);
-    
-            if (config.showMarkers) {
-                marker.setLngLat(chapter.location.center);
-            }
-            if (chapter.onChapterEnter.length > 0) {
-                chapter.onChapterEnter.forEach(setLayerOpacity);
-            }
-            if (chapter.callback) {
-                window[chapter.callback]();
-            }
-            if (chapter.rotateAnimation) {
-                map.current.once('moveend', function() {
-                    const rotateNumber = map.getBearing();
-                    map.current.rotateTo(rotateNumber + 90, {
-                        duration: 24000, easing: function (t) {
-                            return t;
-                        }
+        
+            // setup the instance, pass callback functions
+            scroller
+            .setup({
+                step: '.step',
+                offset: 0.5,
+                progress: true
+            })
+            .onStepEnter(response => {
+                var chapter = config.chapters.find(chap => chap.id === response.element.id);
+                response.element.classList.add('active');
+                map.current[chapter.mapAnimation || 'flyTo'](chapter.location);
+        
+                if (config.showMarkers) {
+                    marker.setLngLat(chapter.location.center);
+                }
+                if (chapter.onChapterEnter.length > 0) {
+                    chapter.onChapterEnter.forEach(setLayerOpacity);
+                }
+                if (chapter.callback) {
+                    window[chapter.callback]();
+                }
+                if (chapter.rotateAnimation) {
+                    map.current.once('moveend', function() {
+                        const rotateNumber = map.getBearing();
+                        map.current.rotateTo(rotateNumber + 90, {
+                            duration: 24000, easing: function (t) {
+                                return t;
+                            }
+                        });
                     });
-                });
-            }
-        })
-        .onStepExit(response => {
-            var chapter = config.chapters.find(chap => chap.id === response.element.id);
-            response.element.classList.remove('active');
-            if (chapter.onChapterExit.length > 0) {
-                chapter.onChapterExit.forEach(setLayerOpacity);
-            }
+                }
+            })
+            .onStepExit(response => {
+                var chapter = config.chapters.find(chap => chap.id === response.element.id);
+                response.element.classList.remove('active');
+                if (chapter.onChapterExit.length > 0) {
+                    chapter.onChapterExit.forEach(setLayerOpacity);
+                }
+            });
         });
-
+        
     },[]) // eslint-disable-line react-hooks/exhaustive-deps
 
     return (
@@ -155,4 +152,4 @@ const GlacierMap = () => {
     )
 }
 
-export default GlacierMap
+export default BikePhilly
