@@ -8,7 +8,7 @@ import {alignments,layerTypes} from '../constants/attributes'
 mapboxgl.accessToken = config.accessToken;
 
 const scroller = window.scrollama();
-let initLoad = true;
+
 window.addEventListener('resize', scroller.resize);
 
 
@@ -17,7 +17,7 @@ const GlacierMap = () => {
     const map = useRef(null);
     
     const getLayerPaintType = (layer) => {
-        var layerType = map.getLayer(layer).type;
+        var layerType = map.current.getLayer(layer).type;
         return layerTypes[layerType];
     }
 
@@ -28,9 +28,9 @@ const GlacierMap = () => {
             if (layer.duration) {
                 var transitionProp = prop + "-transition";
                 options = { "duration": layer.duration };
-                map.setPaintProperty(layer.layer, transitionProp, options);
+                map.current.setPaintProperty(layer.layer, transitionProp, options);
             }
-            map.setPaintProperty(layer.layer, prop, layer.opacity, options);
+            map.current.setPaintProperty(layer.layer, prop, layer.opacity, options);
         });
     }
 
@@ -132,6 +132,23 @@ const GlacierMap = () => {
                     <h1>{config.title}</h1>
                     <h2>{config.subtitle}</h2>
                     <p>{config.byline}</p>
+                </div>
+                <div id="features">
+                    {config.chapters.map((record,idx) =>{
+                        return (
+                            <div id={`${record.id}`} className={`step ${idx === 0 ? `active`: " "} ${alignments[record.alignment] || 'centered'} ${record.hidden ? 'hidden' : " "} ${config.theme}`}> 
+                            <div id='chapter'>
+                                <h3>{record.title}</h3>
+                                <img src={record.image} alt="description"/>
+                                <p>{record.description}</p>
+                            </div>
+                        </div>
+                        )
+                    })}
+                    
+                </div>
+                <div id="footer" className={config.footer.length > 0 ? `${config.theme}` : 'footer'}>
+                    <p>{config.footer}</p>
                 </div>
             </div>
         </div>
